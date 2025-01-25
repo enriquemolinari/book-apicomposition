@@ -1,6 +1,6 @@
 # Cinema Ticket System - API Composer
 
-- `git clone https://github.com/enriquemolinari/book-api-composer.git`
+- `git clone https://github.com/enriquemolinari/book-apicomposition.git`
 - `cd api-composer`
 - To compile and install all dependencies: `./mvnw install`
 - To run all tests: `./mvnw test`
