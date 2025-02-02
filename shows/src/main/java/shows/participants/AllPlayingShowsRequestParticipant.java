@@ -35,7 +35,6 @@ public class AllPlayingShowsRequestParticipant implements RequestParticipant {
     @Override
     public void contributeTo(List<Map<String, Object>> viewModel, Map<String, Object> params) {
         checkViewModelIsEmpty(viewModel);
-        //TODO: handle errors
         try {
             var response = httpCallShows();
             var shows = responseToListofMaps(response);
@@ -82,8 +81,7 @@ public class AllPlayingShowsRequestParticipant implements RequestParticipant {
                 .create();
         Type type = new TypeToken<List<Map<String, Object>>>() {
         }.getType();
-        List<Map<String, Object>> shows = gson.fromJson(response.body(), type);
-        return shows;
+        return gson.fromJson(response.body(), type);
     }
 
     @Override

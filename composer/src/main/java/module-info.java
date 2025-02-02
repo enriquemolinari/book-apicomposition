@@ -10,6 +10,7 @@ module composer {
 
     requires requestparticipant;
     requires spring.webmvc;
+    requires org.slf4j;
 
     opens apicomposer.impl;
     opens apicomposer.main;

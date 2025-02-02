@@ -1,7 +1,8 @@
 package movies.participants;
 
 import apicomposer.api.EnvValue;
-import movies.config.Config;
+import movies.participants.in.shows.InShowsConfig;
+import movies.participants.in.shows.MoviesByIDsRequestParticipant;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static movies.participants.MoviesByIDsRequestParticipant.*;
+import static movies.participants.in.shows.MoviesByIDsRequestParticipant.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -24,11 +25,11 @@ public class MoviesByIDsRequestParticipantTest {
 
     public static final String ENV_VALUE = "default";
     private ClientAndServer moviesMockServer;
-    private Config config;
+    private InShowsConfig config;
 
     @BeforeEach
     public void startMockServer() {
-        config = new Config(ENV_VALUE);
+        config = new InShowsConfig(ENV_VALUE);
         moviesMockServer = ClientAndServer
                 .startClientAndServer(Integer.valueOf(config.moviesPort()));
     }

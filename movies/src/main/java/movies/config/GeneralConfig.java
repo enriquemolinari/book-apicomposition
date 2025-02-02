@@ -6,24 +6,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class Config {
+public class GeneralConfig {
     public static final String CONFIG_FILE_NAME = "movies-%s.properties";
     public static final String MOVIES_SERVER_PORT = "movies.server.port";
     public static final String MOVIES_SERVER_HOST = "movies.server.host";
     public static final String MOVIES_HTTPCALL_TIMEOUT = "movies.httpcall.timeout";
-    public static final String MOVIES_IDS_PATH = "movies.ids.path";
-    public static final String MOVIES_IDS_PARAM_NAME = "movies.ids.param.name";
-    public static final String SHOWS_PATH_PARTICIPATE = "shows.path.participate";
-    private final Properties properties = new Properties();
+    //TODO: make private
+    protected final Properties properties = new Properties();
     private final String envValue;
 
-    public Config(EnvValue envValue) {
+    public GeneralConfig(EnvValue envValue) {
         checkValidEnvValues(envValue);
         this.envValue = envValue.env();
         loadPropertiesFile();
     }
 
-    public Config(String envValue) {
+    public GeneralConfig(String envValue) {
         checkValidEnvValues(new EnvValue(envValue));
         this.envValue = envValue;
         loadPropertiesFile();
@@ -48,18 +46,6 @@ public class Config {
 
     public int httpCallTimeout() {
         return Integer.parseInt(properties.getProperty(MOVIES_HTTPCALL_TIMEOUT));
-    }
-
-    public String moviesByIdsPath() {
-        return properties.getProperty(MOVIES_IDS_PATH);
-    }
-
-    public String moviesIdsParamName() {
-        return properties.getProperty(MOVIES_IDS_PARAM_NAME);
-    }
-
-    public String showsPath() {
-        return properties.getProperty(SHOWS_PATH_PARTICIPATE);
     }
 
     private void loadPropertiesFile() {

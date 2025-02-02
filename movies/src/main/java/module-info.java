@@ -3,5 +3,6 @@ module movies {
     requires com.google.gson;
     requires java.net.http;
 
-    opens movies.participants;
+    opens movies.participants.in.shows;
+    opens movies.participants.in.rates;
 }

@@ -5,11 +5,9 @@ import apicomposer.api.RequestParticipant;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//TODO: Tests...
 @Component
 public class ResponseComposer {
     public static final String ONE_FIRST = "The must be only one participant running as the first one";
@@ -24,7 +22,7 @@ public class ResponseComposer {
     // The first contributor might add parameters required
     // by the others contributors in the list.
     public List<Map<String, Object>> composeResponse(String requestPath, String method,
-                                                     HashMap<String, Object> params) {
+                                                     Map<String, Object> params) {
         var interestedParticipants = findInterestedParticipants(requestPath, method, params);
         checkOnlyOneRequireFirst(interestedParticipants);
         var viewModel = new ArrayList<Map<String, Object>>();
@@ -32,21 +30,22 @@ public class ResponseComposer {
         executeFirstOneIfAny(params, interestedParticipants, viewModel);
         //all the other contributors to the composition. Might be in parrallel.
         executeAllOthers(params, interestedParticipants, viewModel);
+
         return viewModel;
     }
 
-    private void executeAllOthers(HashMap<String, Object> params, List<RequestParticipant> interestedParticipants, ArrayList<Map<String, Object>> viewModel) {
+    private void executeAllOthers(Map<String, Object> params, List<RequestParticipant> interestedParticipants, ArrayList<Map<String, Object>> viewModel) {
         interestedParticipants.stream().filter(rp1 -> !rp1.requireFirst())
                 .forEach(rp -> rp.contributeTo(viewModel, params));
     }
 
-    private void executeFirstOneIfAny(HashMap<String, Object> params, List<RequestParticipant> interestedParticipants, ArrayList<Map<String, Object>> viewModel) {
+    private void executeFirstOneIfAny(Map<String, Object> params, List<RequestParticipant> interestedParticipants, ArrayList<Map<String, Object>> viewModel) {
         interestedParticipants.stream().filter(RequestParticipant::requireFirst)
                 .findFirst()
                 .ifPresent(f -> f.contributeTo(viewModel, params));
     }
 
-    private List<RequestParticipant> findInterestedParticipants(String requestPath, String method, HashMap<String, Object> params) {
+    private List<RequestParticipant> findInterestedParticipants(String requestPath, String method, Map<String, Object> params) {
         return requestParticipant
                 .stream()
                 .filter(rp -> rp.isInterestedIn(requestPath, method, params))

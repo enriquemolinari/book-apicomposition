@@ -85,7 +85,7 @@ public class AllPlayingShowsRequestParticipantTest {
         viewModel.add(Map.of("1", "2"));
 
         var e = assertThrows(RuntimeException.class, () -> {
-            showsMainParticipant.contributeTo(viewModel, new HashMap<String, Object>());
+            showsMainParticipant.contributeTo(viewModel, new HashMap<>());
         });
         assertEquals(AllPlayingShowsRequestParticipant.VIEW_MODEL_MUST_BE_EMPTY, e.getMessage());
     }
@@ -109,7 +109,6 @@ public class AllPlayingShowsRequestParticipantTest {
         assertFalse(isInterested);
     }
 
-    //TODO: testing timeout expire and any other error
     private String jsonForShowsOk() {
         return """
                 [
