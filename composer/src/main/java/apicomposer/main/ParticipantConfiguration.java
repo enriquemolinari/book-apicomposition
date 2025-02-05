@@ -11,8 +11,7 @@ import org.springframework.context.annotation.FilterType;
         includeFilters = @ComponentScan.Filter(
                 type = FilterType.ASSIGNABLE_TYPE,
                 value = RequestParticipant.class
-        ),
-        useDefaultFilters = false
+        )
 )
 public class ParticipantConfiguration {
 }

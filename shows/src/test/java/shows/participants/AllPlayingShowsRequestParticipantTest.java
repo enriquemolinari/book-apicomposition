@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.integration.ClientAndServer;
 import shows.config.Config;
+import shows.participants.in.shows.AllPlayingShowsRequestParticipant;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,8 +16,8 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
-import static shows.participants.AllPlayingShowsRequestParticipant.MOVIE_ID_KEY;
 import static shows.participants.TypeCaster.cast;
+import static shows.participants.in.shows.AllPlayingShowsRequestParticipant.MOVIE_ID_KEY;
 
 public class AllPlayingShowsRequestParticipantTest {
 
@@ -48,7 +49,7 @@ public class AllPlayingShowsRequestParticipantTest {
         showsMainParticipant.contributeTo(viewModel, params);
 
         assertEquals(1, params.size());
-        assertTrue(params.get(config.moviesIdsParamName()) instanceof List<?>);
+        assertInstanceOf(List.class, params.get(config.moviesIdsParamName()));
         assertEquals(2, ((List) params.get(config.moviesIdsParamName())).size());
 
         assertEquals(2, viewModel.size());
@@ -84,9 +85,8 @@ public class AllPlayingShowsRequestParticipantTest {
         var viewModel = new ArrayList<Map<String, Object>>();
         viewModel.add(Map.of("1", "2"));
 
-        var e = assertThrows(RuntimeException.class, () -> {
-            showsMainParticipant.contributeTo(viewModel, new HashMap<>());
-        });
+        var e = assertThrows(RuntimeException.class,
+                () -> showsMainParticipant.contributeTo(viewModel, new HashMap<>()));
         assertEquals(AllPlayingShowsRequestParticipant.VIEW_MODEL_MUST_BE_EMPTY, e.getMessage());
     }
 

@@ -16,7 +16,7 @@ public class MoviesByIDsRequestParticipant extends AbstractRequestParticipant {
     public static final String MOVIE_GENRES_KEY = "genres";
     public static final String MOVIE_ID_KEY = "movieId";
     public static final String FALLBACK_VALUE = "NOT AVAILABLE";
-    public static final String VIEW_MODEL_MUST_BE_PUPULATED = "ViewModel must be populated";
+    public static final String VIEW_MODEL_MUST_BE_POPULATED = "ViewModel must be populated";
     private final InShowsConfig config;
 
     public MoviesByIDsRequestParticipant(EnvValue env) {
@@ -86,14 +86,14 @@ public class MoviesByIDsRequestParticipant extends AbstractRequestParticipant {
 
     private void checkViewModelIsAlreadyPopulated(List<Map<String, Object>> viewModel) {
         if (viewModel == null) {
-            throw new RuntimeException(VIEW_MODEL_MUST_BE_PUPULATED);
+            throw new RuntimeException(VIEW_MODEL_MUST_BE_POPULATED);
         }
         if (viewModel.isEmpty()) {
-            throw new RuntimeException(VIEW_MODEL_MUST_BE_PUPULATED);
+            throw new RuntimeException(VIEW_MODEL_MUST_BE_POPULATED);
         }
         var movie = viewModel.getFirst().get(MOVIE_ID_KEY);
         if (movie == null) {
-            throw new RuntimeException(VIEW_MODEL_MUST_BE_PUPULATED);
+            throw new RuntimeException(VIEW_MODEL_MUST_BE_POPULATED);
         }
     }
 

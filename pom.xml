@@ -13,6 +13,7 @@
         <module>movies</module>
         <module>requestparticipant</module>
         <module>shows</module>
+        <module>users</module>
     </modules>
 
     <properties>

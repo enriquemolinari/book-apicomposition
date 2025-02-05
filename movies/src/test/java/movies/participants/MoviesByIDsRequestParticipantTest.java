@@ -103,10 +103,10 @@ public class MoviesByIDsRequestParticipantTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    public void viewModelMustContainMovies(List viewModelParam) {
+    public void viewModelMustContainShows(List viewModelParam) {
         var moviesPartipant = new MoviesByIDsRequestParticipant(new EnvValue(ENV_VALUE));
         var e = assertThrows(RuntimeException.class, () -> moviesPartipant.contributeTo(viewModelParam, new HashMap<>()));
-        assertEquals(VIEW_MODEL_MUST_BE_PUPULATED, e.getMessage());
+        assertEquals(VIEW_MODEL_MUST_BE_POPULATED, e.getMessage());
     }
 
     @Test
@@ -137,7 +137,7 @@ public class MoviesByIDsRequestParticipantTest {
         var viewModel = List.of(map);
         var e = assertThrows(RuntimeException.class
                 , () -> moviesPartipant.contributeTo(viewModel, new HashMap<>()));
-        assertEquals(VIEW_MODEL_MUST_BE_PUPULATED, e.getMessage());
+        assertEquals(VIEW_MODEL_MUST_BE_POPULATED, e.getMessage());
     }
 
 

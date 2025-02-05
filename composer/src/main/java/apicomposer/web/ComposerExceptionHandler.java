@@ -14,7 +14,7 @@ import java.util.Map;
 @ControllerAdvice
 public class ComposerExceptionHandler
         extends ResponseEntityExceptionHandler {
-    Logger logger = LoggerFactory.getLogger(ComposerExceptionHandler.class);
+    final Logger logger = LoggerFactory.getLogger(ComposerExceptionHandler.class);
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleAllMyException(Exception ex, WebRequest request) {
