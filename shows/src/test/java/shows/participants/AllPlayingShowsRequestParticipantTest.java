@@ -5,8 +5,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.integration.ClientAndServer;
-import shows.config.Config;
 import shows.participants.in.shows.AllPlayingShowsRequestParticipant;
+import shows.participants.in.shows.InShowsConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,12 +27,12 @@ public class AllPlayingShowsRequestParticipantTest {
     public static final String PLAYING_TIME_KEY = "playingTime";
     public static final String ENV_VALUE = "default";
     private ClientAndServer showsMockServer;
-    private Config config;
+    private InShowsConfig inShowsConfig;
 
     @BeforeEach
     public void startMockServer() {
-        config = new Config(ENV_VALUE);
-        showsMockServer = ClientAndServer.startClientAndServer(Integer.valueOf(config.showsPort()));
+        inShowsConfig = new InShowsConfig(ENV_VALUE);
+        showsMockServer = ClientAndServer.startClientAndServer(Integer.valueOf(inShowsConfig.showsPort()));
     }
 
     @AfterEach
@@ -42,15 +42,15 @@ public class AllPlayingShowsRequestParticipantTest {
 
     @Test
     public void viewModelIsPopulatedAndParamsWithMovieIds() {
-        showsMockServer.when(request().withPath(config.showsPath())).respond(response().withBody(jsonForShowsOk()));
+        showsMockServer.when(request().withPath(inShowsConfig.showsPath())).respond(response().withBody(jsonForShowsOk()));
         var showsMainParticipant = new AllPlayingShowsRequestParticipant(new EnvValue(ENV_VALUE));
         var viewModel = new ArrayList<Map<String, Object>>();
         var params = new HashMap<String, Object>();
         showsMainParticipant.contributeTo(viewModel, params);
 
         assertEquals(1, params.size());
-        assertInstanceOf(List.class, params.get(config.moviesIdsParamName()));
-        assertEquals(2, ((List) params.get(config.moviesIdsParamName())).size());
+        assertInstanceOf(List.class, params.get(inShowsConfig.moviesIdsParamName()));
+        assertEquals(2, ((List) params.get(inShowsConfig.moviesIdsParamName())).size());
 
         assertEquals(2, viewModel.size());
         var movie123 = viewModel.stream().filter(e -> e.get(MOVIE_ID_KEY).equals(123L)).toList().getFirst();

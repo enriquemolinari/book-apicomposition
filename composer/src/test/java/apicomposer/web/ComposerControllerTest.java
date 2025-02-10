@@ -11,9 +11,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
+import static apicomposer.web.ComposerController.HEADER_USERID_NAME;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -25,6 +29,9 @@ public class ComposerControllerTest {
     public static final String MOVIE_RATE_PATH = "/movies/1/rate";
     public static final String USERS_PROFILE_IDS_PATH = "/users/profile/by/.*";
     public static final String COMPOSED_MOVIES_RATE_PATH = "/composed/movies/1/rate";
+    public static final String USERS_PROFILE_PATH = "/users/private/profile";
+    public static final String SHOWS_USER_PROFILE_PATH = "/shows/buyer";
+    public static final String COMPOSED_USER_PROFILE_PATH = "/composed/users/private/profile";
     @Value("${movies.server.port}")
     private int MOVIES_SERVER_PORT;
     @Value("${shows.server.port}")
@@ -50,6 +57,62 @@ public class ComposerControllerTest {
         ResponseEntity<String> response = restTemplate.getForEntity(COMPOSED_MOVIES_RATE_PATH, String.class);
         assertTrue(response.getStatusCode().is2xxSuccessful());
         JSONAssert.assertEquals(jsonExpectedMovieRates(), response.getBody(), true);
+    }
+
+    @Test
+    public void composedUserProfile() throws JSONException {
+        usersMockServer = ClientAndServer.startClientAndServer(USERS_SERVER_PORT);
+        usersMockServer.when(request()
+                        .withPath(USERS_PROFILE_PATH))
+                .respond(response().withBody(jsonSingleUserProfile()));
+
+        showsMockServer = ClientAndServer.startClientAndServer(SHOWS_SERVER_PORT);
+        showsMockServer.when(request().withPath(SHOWS_USER_PROFILE_PATH))
+                .respond(response().withBody(jsonBuyerInfo()));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HEADER_USERID_NAME, "1");
+        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                COMPOSED_USER_PROFILE_PATH,
+                HttpMethod.GET,
+                httpEntity,
+                String.class
+        );
+        assertTrue(response.getStatusCode().is2xxSuccessful());
+        String body = response.getBody();
+        System.out.println(body);
+        JSONAssert.assertEquals(jsonExpectedUserProfile(), body, true);
+    }
+
+    private String jsonExpectedUserProfile() {
+        return """
+                {
+                        "userId": 1,
+                        "points": "150",
+                        "fullname": "Enrique Molinari",
+                        "username": "emolinari",
+                        "email": "enrique.molinari@gmail.com"
+                    }""";
+    }
+
+    private String jsonSingleUserProfile() {
+        return """
+                {
+                        "userId": 1,
+                        "fullname": "Enrique Molinari",
+                        "username": "emolinari",
+                        "email": "enrique.molinari@gmail.com"
+                    }""";
+    }
+
+    private String jsonBuyerInfo() {
+        return """
+                {
+                   "userId": 1,
+                   "points": "150"
+                }
+                """;
     }
 
     @Test

@@ -3,10 +3,7 @@ package apicomposer.web;
 import apicomposer.impl.ResponseComposer;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +13,8 @@ import java.util.Map;
 @RequestMapping("/composed")
 public class ComposerController {
 
+    public static final String HEADER_USERID_NAME = "fw-gateway-user-id";
+    private static final String AUTHENTICATION_REQUIRED = "Unauthorized";
     private final ResponseComposer composer;
 
     public ComposerController(ResponseComposer composer) {
@@ -24,7 +23,7 @@ public class ComposerController {
 
     @GetMapping("/shows")
     public ResponseEntity<List<Map<String, Object>>> handleComposeShows(HttpServletRequest request) {
-        return composeResponse(request, new HashMap<>());
+        return composeJsonResponseList(request, new HashMap<>());
     }
 
     @GetMapping("/movies/{id}/rate")
@@ -32,14 +31,41 @@ public class ComposerController {
                                                                       @PathVariable Long id) {
         var params = new HashMap<String, Object>();
         params.put("id", id);
-        return composeResponse(request, params);
+        return composeJsonResponseList(request, params);
     }
 
-    private ResponseEntity<List<Map<String, Object>>> composeResponse(HttpServletRequest request,
-                                                                      Map<String, Object> params) {
+    @GetMapping("/users/private/profile")
+    public ResponseEntity<Map<String, Object>> handleUsersProfile(HttpServletRequest request,
+                                                                  @RequestHeader(value = HEADER_USERID_NAME, required = false) Long id) {
+        checkUserIdIsPresent(id);
+        var params = new HashMap<String, Object>();
+        params.put("userId", id);
+        return composeJsonResponseObject(request, params);
+    }
+
+    private ResponseEntity<Map<String, Object>> composeJsonResponseObject(HttpServletRequest request,
+                                                                          Map<String, Object> params) {
+        var listOfMap = composeListOfMap(request, params);
+        if (!listOfMap.isEmpty())
+            return ResponseEntity.ok(listOfMap.getFirst());
+        throw new RuntimeException("Empty response");
+    }
+
+    private ResponseEntity<List<Map<String, Object>>> composeJsonResponseList(HttpServletRequest request,
+                                                                              Map<String, Object> params) {
+        return ResponseEntity.ok(composeListOfMap(request, params));
+    }
+
+    private List<Map<String, Object>> composeListOfMap(HttpServletRequest request, Map<String, Object> params) {
         String requestPath = request.getRequestURI();
         String requestMethod = request.getMethod();
-        return ResponseEntity.ok(composer
-                .composeResponse(requestPath, requestMethod, params));
+        return composer
+                .composeResponse(requestPath, requestMethod, params);
+    }
+
+    private void checkUserIdIsPresent(Long id) {
+        if (id == null) {
+            throw new AuthException(AUTHENTICATION_REQUIRED);
+        }
     }
 }

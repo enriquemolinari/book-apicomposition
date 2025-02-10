@@ -37,15 +37,15 @@ public class UsersByIdsRequestParticipant extends AbstractRequestParticipant {
     @Override
     protected boolean interestedIn(String requestPath, String requestMethod, Map<String, Object> params) {
         return requestPath.matches(config.moviesRatePathPattern()) &&
-                "GET".equals(requestMethod);
+               "GET".equals(requestMethod);
     }
 
     @Override
     protected String url(Map<String, Object> params) {
         return config.usersHost()
-                + ":"
-                + config.usersPort()
-                + config.usersIdsPath().formatted(toCommaSeparated((List<Long>) params.get(config.usersIdsParamName())));
+               + ":"
+               + config.usersPort()
+               + config.usersIdsPath().formatted(toCommaSeparated((List<Long>) params.get(config.usersIdsParamName())));
     }
 
     private String toCommaSeparated(List<Long> ids) {

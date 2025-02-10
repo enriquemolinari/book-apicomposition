@@ -4,4 +4,5 @@ module users {
     requires java.net.http;
 
     opens users.participants.in.rates;
+    opens users.participants.in.profile;
 }

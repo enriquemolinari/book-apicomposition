@@ -1,9 +1,7 @@
 package users.participants.in;
 
 import apicomposer.api.RequestParticipant;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.ToNumberPolicy;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
@@ -22,6 +20,9 @@ import static java.net.http.HttpClient.newHttpClient;
 
 public abstract class AbstractRequestParticipant implements RequestParticipant {
 
+    public static final String FW_GATEWAY_USER_ID = "fw-gateway-user-id";
+    public static final String USER_ID_PARAM_KEY = "userId";
+
     @Override
     public void contributeTo(List<Map<String, Object>> viewModel, Map<String, Object> params) {
         preConditions(viewModel, params);
@@ -39,9 +40,16 @@ public abstract class AbstractRequestParticipant implements RequestParticipant {
                 //to keep long as long, if not by default double is used
                 .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
                 .create();
+        String json = response.body();
+        JsonElement element = JsonParser.parseString(json);
+        if (element.isJsonObject()) {
+            JsonArray jsonArray = new JsonArray();
+            jsonArray.add(element);
+            element = jsonArray;
+        }
         Type type = new TypeToken<List<Map<String, Object>>>() {
         }.getType();
-        return gson.fromJson(response.body(), type);
+        return gson.fromJson(element, type);
     }
 
     @Override
@@ -58,6 +66,7 @@ public abstract class AbstractRequestParticipant implements RequestParticipant {
             throws URISyntaxException, IOException, InterruptedException {
         try (HttpClient httpClient = newHttpClient()) {
             var req = HttpRequest.newBuilder(new URI(url(params)))
+                    .header(FW_GATEWAY_USER_ID, String.valueOf(params.get(USER_ID_PARAM_KEY)))
                     .GET()
                     .timeout(Duration.of(httpCallTimeOut(), ChronoUnit.SECONDS))
                     .build();

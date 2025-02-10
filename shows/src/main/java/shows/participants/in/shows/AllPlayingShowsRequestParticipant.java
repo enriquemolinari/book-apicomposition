@@ -1,7 +1,6 @@
 package shows.participants.in.shows;
 
 import apicomposer.api.EnvValue;
-import shows.config.Config;
 import shows.participants.AbstractRequestParticipant;
 
 import java.util.List;
@@ -11,15 +10,15 @@ public class AllPlayingShowsRequestParticipant extends AbstractRequestParticipan
 
     public static final String MOVIE_ID_KEY = "movieId";
     public static final String VIEW_MODEL_MUST_BE_EMPTY = "ViewModel must be empty";
-    private final Config config;
+    private final InShowsConfig inShowsConfig;
 
     public AllPlayingShowsRequestParticipant(EnvValue env) {
-        this.config = new Config(env);
+        this.inShowsConfig = new InShowsConfig(env);
     }
 
     @Override
     protected long httpCallTimeOut() {
-        return config.httpCallTimeout();
+        return inShowsConfig.httpCallTimeout();
     }
 
     @Override
@@ -34,13 +33,13 @@ public class AllPlayingShowsRequestParticipant extends AbstractRequestParticipan
 
     @Override
     protected boolean interestedIn(String requestPath, String requestMethod, Map<String, Object> params) {
-        return config.showsPathParticipate().equals(requestPath)
-               && "GET".equals(requestMethod);
+        return inShowsConfig.showsPathParticipate().equals(requestPath)
+                && "GET".equals(requestMethod);
     }
 
     @Override
     protected String url(Map<String, Object> params) {
-        return config.showsHost() + ":" + config.showsPort() + config.showsPath();
+        return inShowsConfig.showsHost() + ":" + inShowsConfig.showsPort() + inShowsConfig.showsPath();
     }
 
     @Override
@@ -54,7 +53,7 @@ public class AllPlayingShowsRequestParticipant extends AbstractRequestParticipan
         var movieIds = responseMap
                 .stream()
                 .map(map -> map.get(MOVIE_ID_KEY)).toList();
-        params.put(config.moviesIdsParamName(), movieIds);
+        params.put(inShowsConfig.moviesIdsParamName(), movieIds);
     }
 
     private void checkViewModelIsEmpty(List<Map<String, Object>> viewModel) {

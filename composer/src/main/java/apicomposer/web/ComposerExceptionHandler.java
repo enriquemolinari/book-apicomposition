@@ -14,12 +14,24 @@ import java.util.Map;
 @ControllerAdvice
 public class ComposerExceptionHandler
         extends ResponseEntityExceptionHandler {
+    public static final String MESSAGE_KEY = "message";
     final Logger logger = LoggerFactory.getLogger(ComposerExceptionHandler.class);
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleAllMyException(Exception ex, WebRequest request) {
         //Stream error to operations log
         logger.error(ex.getMessage(), ex);
-        return new ResponseEntity<>(Map.of("message", "Ups... something went wrong"), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(Map.of(MESSAGE_KEY, "Ups... something went wrong"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<Object> handleAllBusinessExceptions(
+            Exception ex,
+            WebRequest request) {
+        //Stream error to operations log
+        logger.error(ex.getMessage(), ex);
+        return new ResponseEntity<>(Map.of(MESSAGE_KEY,
+                ex.getMessage()),
+                HttpStatus.UNAUTHORIZED);
     }
 }

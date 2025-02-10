@@ -39,9 +39,10 @@ public abstract class AbstractRequestParticipant implements RequestParticipant {
                 //to keep long as long, if not by default double is used
                 .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
                 .create();
+        String json = response.body();
         Type type = new TypeToken<List<Map<String, Object>>>() {
         }.getType();
-        return gson.fromJson(response.body(), type);
+        return gson.fromJson(json, type);
     }
 
     @Override
