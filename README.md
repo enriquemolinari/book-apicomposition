@@ -19,5 +19,7 @@
       implementations. This enables them to contribute to a request/response call, augmenting the response data sent to
       UI clients.
     - **RequestParticipant Module**: Defines the interface that services must implement to participate in request calls.
+    - Each team responsible for a microservice (users, movies, and shows) provides its implementation of the
+      RequestParticipant interface to participate in specific request/response calls.
 - The API Composer framework is inspired by the ViewModel Composition concepts presented
   by [Mauro Servienti](https://milestone.topics.it/series/view-model-composition.html).
