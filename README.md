@@ -23,3 +23,11 @@
       RequestParticipant interface to participate in specific request/response calls.
 - The API Composer framework is inspired by the ViewModel Composition concepts presented
   by [Mauro Servienti](https://milestone.topics.it/series/view-model-composition.html).
+
+# Troubleshooting Intellij Idea
+
+In order to run the application from intellij idea as Run Application I have to set the following vm options:
+
+```
+--add-modules jdk.unsupported
+```

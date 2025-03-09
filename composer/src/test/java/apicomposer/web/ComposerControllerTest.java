@@ -85,6 +85,47 @@ public class ComposerControllerTest {
         JSONAssert.assertEquals(jsonExpectedUserProfile(), body, true);
     }
 
+    @Test
+    public void composedShows() throws JSONException {
+        moviesMockServer = ClientAndServer.startClientAndServer(MOVIES_SERVER_PORT);
+        showsMockServer = ClientAndServer.startClientAndServer(SHOWS_SERVER_PORT);
+        moviesMockServer.when(request().withPath("/movies/by/.*"))
+                .respond(response().withBody(jsonMovies()));
+        showsMockServer.when(request()
+                        .withPath("/shows"))
+                .respond(response().withBody(jsonShows()));
+        ResponseEntity<String> response = restTemplate.getForEntity("/composed/shows", String.class);
+        assertTrue(response.getStatusCode().is2xxSuccessful());
+        JSONAssert.assertEquals(jsonExpectedShows(), response.getBody(), true);
+    }
+
+    @Test
+    public void fallsbackCache() throws JSONException {
+        moviesMockServer = ClientAndServer.startClientAndServer(MOVIES_SERVER_PORT);
+        usersMockServer = ClientAndServer.startClientAndServer(USERS_SERVER_PORT);
+        moviesMockServer.when(request().withPath(MOVIE_RATE_PATH))
+                .respond(response().withBody(jsonMovieRatesBodyValid()));
+        usersMockServer.when(request()
+                        .withPath(USERS_PROFILE_IDS_PATH))
+                .respond(response().withBody(jsonUsersProfile()));
+        // populate the cache
+        ResponseEntity<String> response = restTemplate.getForEntity(COMPOSED_MOVIES_RATE_PATH, String.class);
+        assertTrue(response.getStatusCode().is2xxSuccessful());
+
+        // simulate a failure
+        moviesMockServer.stop();
+        moviesMockServer = ClientAndServer.startClientAndServer(MOVIES_SERVER_PORT);
+        moviesMockServer.when(request().withPath(MOVIE_RATE_PATH))
+                .respond(response().withStatusCode(500));
+        ResponseEntity<String> responseWithFallback = restTemplate.getForEntity(COMPOSED_MOVIES_RATE_PATH, String.class);
+        assertTrue(responseWithFallback.getStatusCode().is2xxSuccessful());
+        JSONAssert.assertEquals(jsonExpectedMovieRates(), responseWithFallback.getBody(), true);
+
+        moviesMockServer.when(request().withPath(MOVIE_RATE_PATH))
+                .respond(response().withBody(jsonMovieRatesBodyValid()));
+    }
+
+
     private String jsonExpectedUserProfile() {
         return """
                 {
@@ -113,20 +154,6 @@ public class ComposerControllerTest {
                    "points": "150"
                 }
                 """;
-    }
-
-    @Test
-    public void composedShows() throws JSONException {
-        moviesMockServer = ClientAndServer.startClientAndServer(MOVIES_SERVER_PORT);
-        showsMockServer = ClientAndServer.startClientAndServer(SHOWS_SERVER_PORT);
-        moviesMockServer.when(request().withPath("/movies/by/.*"))
-                .respond(response().withBody(jsonMovies()));
-        showsMockServer.when(request()
-                        .withPath("/shows"))
-                .respond(response().withBody(jsonShows()));
-        ResponseEntity<String> response = restTemplate.getForEntity("/composed/shows", String.class);
-        assertTrue(response.getStatusCode().is2xxSuccessful());
-        JSONAssert.assertEquals(jsonExpectedShows(), response.getBody(), true);
     }
 
     @AfterEach

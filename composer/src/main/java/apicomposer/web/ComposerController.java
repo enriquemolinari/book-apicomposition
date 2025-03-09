@@ -2,6 +2,7 @@ package apicomposer.web;
 
 import apicomposer.impl.ResponseComposer;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +17,15 @@ public class ComposerController {
     public static final String HEADER_USERID_NAME = "fw-gateway-user-id";
     private static final String AUTHENTICATION_REQUIRED = "Unauthorized";
     private final ResponseComposer composer;
+    private final String userIdParamName;
+    private final String movieIdParamName;
 
-    public ComposerController(ResponseComposer composer) {
+    public ComposerController(ResponseComposer composer,
+                              @Value("${composer.userid.param.name}") String userIdParamName,
+                              @Value("${composer.movieid.param.name}") String movieIdParamName) {
         this.composer = composer;
+        this.userIdParamName = userIdParamName;
+        this.movieIdParamName = movieIdParamName;
     }
 
     @GetMapping("/shows")
@@ -30,7 +37,7 @@ public class ComposerController {
     public ResponseEntity<List<Map<String, Object>>> handleMovieRates(HttpServletRequest request,
                                                                       @PathVariable Long id) {
         var params = new HashMap<String, Object>();
-        params.put("id", id);
+        params.put(movieIdParamName, id);
         return composeJsonResponseList(request, params);
     }
 
@@ -39,7 +46,7 @@ public class ComposerController {
                                                                   @RequestHeader(value = HEADER_USERID_NAME, required = false) Long id) {
         checkUserIdIsPresent(id);
         var params = new HashMap<String, Object>();
-        params.put("userId", id);
+        params.put(userIdParamName, id);
         return composeJsonResponseObject(request, params);
     }
 

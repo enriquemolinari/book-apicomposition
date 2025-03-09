@@ -20,7 +20,7 @@ public class ResponseComposerTest {
                 Map.of("k1", "v1"));
         var rp2 = createRequestParticipantRunFirst(
                 Map.of("k2", "v2"));
-        var composer = new ResponseComposer(List.of(rp1, rp2));
+        var composer = new ResponseComposer(List.of(rp1, rp2), null, null);
         HashMap<String, Object> params = new HashMap<>();
         var response = composer.composeResponse("", "", params);
         assertEquals(2, response.size());
@@ -36,7 +36,7 @@ public class ResponseComposerTest {
                 Map.of("k1", "v1"));
         var rp2 = createRequestParticipant(true, true,
                 Map.of("k2", "v2"));
-        var composer = new ResponseComposer(List.of(rp1, rp2));
+        var composer = new ResponseComposer(List.of(rp1, rp2), null, null);
         var e = assertThrows(RuntimeException.class,
                 () -> composer.composeResponse("",
                         "", new HashMap<>()));
@@ -53,7 +53,7 @@ public class ResponseComposerTest {
                 Map.of("k3", "v3"));
         var rp4 = createRequestParticipant(true, false,
                 Map.of("k4", "v4"));
-        var composer = new ResponseComposer(List.of(rp1, rp2, rp3, rp4));
+        var composer = new ResponseComposer(List.of(rp1, rp2, rp3, rp4), null, null);
         var response = composer.composeResponse("", "", new HashMap<>());
         assertEquals(3, response.size());
         assertEquals(1, response.stream()
