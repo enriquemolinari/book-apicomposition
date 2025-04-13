@@ -17,7 +17,7 @@ module composer {
 //    requires io.github.resilience4j.all;
 //    requires io.github.resilience4j.annotations;
 
-    opens apicomposer.impl;
+    opens apicomposer.framework;
     opens apicomposer.main;
     opens apicomposer.web;
 }

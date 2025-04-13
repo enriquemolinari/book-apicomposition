@@ -81,7 +81,6 @@ public class ComposerControllerTest {
         );
         assertTrue(response.getStatusCode().is2xxSuccessful());
         String body = response.getBody();
-        System.out.println(body);
         JSONAssert.assertEquals(jsonExpectedUserProfile(), body, true);
     }
 
@@ -97,6 +96,68 @@ public class ComposerControllerTest {
         ResponseEntity<String> response = restTemplate.getForEntity("/composed/shows", String.class);
         assertTrue(response.getStatusCode().is2xxSuccessful());
         JSONAssert.assertEquals(jsonExpectedShows(), response.getBody(), true);
+    }
+
+    @Test
+    public void composedShowsSale() throws JSONException {
+        showsMockServer = ClientAndServer.startClientAndServer(SHOWS_SERVER_PORT);
+        moviesMockServer = ClientAndServer.startClientAndServer(MOVIES_SERVER_PORT);
+        usersMockServer = ClientAndServer.startClientAndServer(USERS_SERVER_PORT);
+
+        showsMockServer.when(request().withPath("/shows/sale/.*"))
+                .respond(response().withBody(jsonShowSale()));
+
+        moviesMockServer.when(request().withPath("/movies/.*"))
+                .respond(response().withBody(jsonMoviesDetail()));
+
+        usersMockServer.when(request()
+                        .withPath("/users/private/profile"))
+                .respond(response().withBody(jsonUsersProfile()));
+
+        ResponseEntity<String> response = restTemplate.getForEntity("/composed/shows/sale/abcde", String.class);
+        assertTrue(response.getStatusCode().is2xxSuccessful());
+        String body = response.getBody();
+        System.out.println(body);
+        JSONAssert.assertEquals(jsonExpectedComposedShowSale(), body, true);
+    }
+
+    private String jsonExpectedComposedShowSale() {
+        return
+                """                        
+                        {
+                                         "salesIdentifier": "7f1ffef0-f0d4-4099-a368-d5e76c652a8b",
+                                         "movieId": 2,
+                                         "movieName": "The Movie of the Century",
+                                         "userId": 2,
+                                         "username": "emolinari",
+                                         "fullname": "Enrique Molinari",
+                                         "email": "enrique.molinari@gmail.com",
+                                         "total": 10.0,
+                                         "pointsWon": 10,
+                                         "seats": [
+                                            3
+                                         ],
+                                         "showStartTime": "Tuesday 04/08 20:56"
+                                         }
+                        """;
+    }
+
+
+    private String jsonShowSale() {
+        return
+                """                        
+                        {
+                                         "salesIdentifier": "7f1ffef0-f0d4-4099-a368-d5e76c652a8b",
+                                         "movieId": 2,
+                                         "userId": 2,
+                                         "total": 10.0,
+                                         "pointsWon": 10,
+                                         "seats": [
+                                            3
+                                         ],
+                                         "showStartTime": "Tuesday 04/08 20:56"
+                                         }
+                        """;
     }
 
     @Test
@@ -167,6 +228,17 @@ public class ComposerControllerTest {
         if (showsMockServer != null) {
             showsMockServer.stop();
         }
+    }
+
+    private String jsonMoviesDetail() {
+        return """
+                {
+                   "id": "10",
+                   "name": "The Movie of the Century",
+                   "duration": "2h 30m",
+                   "plot": "a b c"
+                }
+                """;
     }
 
     private String jsonMovieRatesBodyValid() {

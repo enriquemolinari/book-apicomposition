@@ -1,8 +1,6 @@
-package movies.participants;
+package movies.participants.in.rates;
 
 import apicomposer.api.EnvValue;
-import movies.participants.in.rates.MovieRatesParticipant;
-import movies.participants.in.rates.RatesConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,13 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static movies.participants.in.rates.MovieRatesParticipant.PARAMETER_ID_MUST_BE_PRESENT;
-import static movies.participants.in.rates.MovieRatesParticipant.USER_ID_KEY;
+import static movies.participants.in.rates.MovieRatesRequestParticipant.PARAMETER_ID_MUST_BE_PRESENT;
+import static movies.participants.in.rates.MovieRatesRequestParticipant.USER_ID_KEY;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-public class MovieRatesParticipantTest {
+public class MovieRatesRequestParticipantTest {
     public static final String ENV_VALUE = "default";
     private ClientAndServer moviesMockServer;
     private RatesConfig config;
@@ -40,7 +38,7 @@ public class MovieRatesParticipantTest {
     public void compositionOk() {
         moviesMockServer.when(request().withPath("/movies/1/rate"))
                 .respond(response().withBody(jsonBodyValid()));
-        var moviesPartipant = new MovieRatesParticipant(new EnvValue(ENV_VALUE));
+        var moviesPartipant = new MovieRatesRequestParticipant(new EnvValue(ENV_VALUE));
         var viewModelList = new ArrayList<Map<String, Object>>();
         var params = new HashMap<String, Object>();
         params.put("id", 1);
@@ -63,7 +61,7 @@ public class MovieRatesParticipantTest {
 
     @Test
     public void movieIdIsRequired() {
-        var moviesPartipant = new MovieRatesParticipant(new EnvValue(ENV_VALUE));
+        var moviesPartipant = new MovieRatesRequestParticipant(new EnvValue(ENV_VALUE));
         var viewModelList = new ArrayList<Map<String, Object>>();
         var params = new HashMap<String, Object>();
         var e = assertThrows(RuntimeException.class,
@@ -98,31 +96,31 @@ public class MovieRatesParticipantTest {
 
     @Test
     public void interestedIn01() {
-        var movieParticipant = new MovieRatesParticipant(new EnvValue(ENV_VALUE));
+        var movieParticipant = new MovieRatesRequestParticipant(new EnvValue(ENV_VALUE));
         assertTrue(movieParticipant.isInterestedIn("/composed/movies/22/rate", "GET", Map.of()));
     }
 
     @Test
     public void interestedIn02() {
-        var movieParticipant = new MovieRatesParticipant(new EnvValue(ENV_VALUE));
+        var movieParticipant = new MovieRatesRequestParticipant(new EnvValue(ENV_VALUE));
         assertFalse(movieParticipant.isInterestedIn("/composed/movies/rate", "GET", Map.of()));
     }
 
     @Test
     public void interestedIn03() {
-        var movieParticipant = new MovieRatesParticipant(new EnvValue(ENV_VALUE));
+        var movieParticipant = new MovieRatesRequestParticipant(new EnvValue(ENV_VALUE));
         assertFalse(movieParticipant.isInterestedIn("/composed/movies/1", "GET", Map.of()));
     }
 
     @Test
     public void interestedIn04() {
-        var movieParticipant = new MovieRatesParticipant(new EnvValue(ENV_VALUE));
+        var movieParticipant = new MovieRatesRequestParticipant(new EnvValue(ENV_VALUE));
         assertTrue(movieParticipant.isInterestedIn("/composed/movies/8/rate", "GET", Map.of()));
     }
 
     @Test
     public void interestedIn05() {
-        var movieParticipant = new MovieRatesParticipant(new EnvValue(ENV_VALUE));
+        var movieParticipant = new MovieRatesRequestParticipant(new EnvValue(ENV_VALUE));
         assertFalse(movieParticipant.isInterestedIn("/composed/movies/8/rate", "POST", Map.of()));
     }
 }

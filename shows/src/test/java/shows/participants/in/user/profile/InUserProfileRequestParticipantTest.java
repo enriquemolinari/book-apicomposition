@@ -1,4 +1,4 @@
-package user.profile;
+package shows.participants.in.user.profile;
 
 import apicomposer.api.EnvValue;
 import org.junit.jupiter.api.AfterEach;
@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockserver.integration.ClientAndServer;
-import shows.participants.in.user.profile.InUserProfileConfig;
-import shows.participants.in.user.profile.InUserProfileRequestParticipant;
 
 import java.util.ArrayList;
 import java.util.HashMap;

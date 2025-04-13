@@ -1,8 +1,6 @@
-package movies.participants;
+package movies.participants.in.shows;
 
 import apicomposer.api.EnvValue;
-import movies.participants.in.shows.InShowsConfig;
-import movies.participants.in.shows.MoviesByIDsRequestParticipant;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

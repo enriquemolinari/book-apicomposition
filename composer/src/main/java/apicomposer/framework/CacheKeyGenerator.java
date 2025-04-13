@@ -1,4 +1,4 @@
-package apicomposer.impl;
+package apicomposer.framework;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

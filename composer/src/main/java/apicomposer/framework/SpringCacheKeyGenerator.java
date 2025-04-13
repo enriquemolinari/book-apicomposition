@@ -1,4 +1,4 @@
-package apicomposer.impl;
+package apicomposer.framework;
 
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.stereotype.Component;

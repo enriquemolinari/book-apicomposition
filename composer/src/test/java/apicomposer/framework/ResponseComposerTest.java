@@ -1,4 +1,4 @@
-package apicomposer.impl;
+package apicomposer.framework;
 
 import apicomposer.api.RequestParticipant;
 import org.junit.jupiter.api.Test;

@@ -6,14 +6,14 @@ import movies.participants.in.AbstractRequestParticipant;
 import java.util.List;
 import java.util.Map;
 
-public class MovieRatesParticipant extends AbstractRequestParticipant {
+public class MovieRatesRequestParticipant extends AbstractRequestParticipant {
 
     public static final String MOVIE_ID_KEY = "id";
     public static final String PARAMETER_ID_MUST_BE_PRESENT = "Parameter id must be present";
     public static final String USER_ID_KEY = "userId";
     private final RatesConfig config;
 
-    public MovieRatesParticipant(EnvValue env) {
+    public MovieRatesRequestParticipant(EnvValue env) {
         this.config = new RatesConfig(env);
     }
 

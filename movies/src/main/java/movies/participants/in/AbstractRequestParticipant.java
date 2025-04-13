@@ -1,9 +1,7 @@
 package movies.participants.in;
 
 import apicomposer.api.RequestParticipant;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.ToNumberPolicy;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
@@ -42,7 +40,14 @@ public abstract class AbstractRequestParticipant implements RequestParticipant {
         String json = response.body();
         Type type = new TypeToken<List<Map<String, Object>>>() {
         }.getType();
-        return gson.fromJson(json, type);
+
+        JsonElement element = JsonParser.parseString(json);
+        if (element.isJsonObject()) {
+            JsonArray jsonArray = new JsonArray();
+            jsonArray.add(element);
+            element = jsonArray;
+        }
+        return gson.fromJson(element, type);
     }
 
     @Override

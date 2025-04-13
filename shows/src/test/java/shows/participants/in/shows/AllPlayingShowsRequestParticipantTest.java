@@ -1,12 +1,10 @@
-package shows.participants;
+package shows.participants.in.shows;
 
 import apicomposer.api.EnvValue;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.integration.ClientAndServer;
-import shows.participants.in.shows.AllPlayingShowsRequestParticipant;
-import shows.participants.in.shows.InShowsConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,8 +14,8 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
-import static shows.participants.TypeCaster.cast;
 import static shows.participants.in.shows.AllPlayingShowsRequestParticipant.MOVIE_ID_KEY;
+import static shows.participants.in.shows.TypeCaster.cast;
 
 public class AllPlayingShowsRequestParticipantTest {
 

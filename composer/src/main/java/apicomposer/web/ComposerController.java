@@ -1,6 +1,6 @@
 package apicomposer.web;
 
-import apicomposer.impl.ResponseComposer;
+import apicomposer.framework.ResponseComposer;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +19,16 @@ public class ComposerController {
     private final ResponseComposer composer;
     private final String userIdParamName;
     private final String movieIdParamName;
+    private final String salesIdParamName;
 
     public ComposerController(ResponseComposer composer,
                               @Value("${composer.userid.param.name}") String userIdParamName,
-                              @Value("${composer.movieid.param.name}") String movieIdParamName) {
+                              @Value("${composer.movieid.param.name}") String movieIdParamName,
+                              @Value("${composer.salesid.param.name}") String salesIdParamName) {
         this.composer = composer;
         this.userIdParamName = userIdParamName;
         this.movieIdParamName = movieIdParamName;
+        this.salesIdParamName = salesIdParamName;
     }
 
     @GetMapping("/shows")
@@ -48,6 +51,20 @@ public class ComposerController {
         var params = new HashMap<String, Object>();
         params.put(userIdParamName, id);
         return composeJsonResponseObject(request, params);
+    }
+
+    @GetMapping("/shows/sale/{salesId}")
+    public ResponseEntity<Map<String, Object>> handleShowSoldNotification(HttpServletRequest request, @PathVariable String salesId) {
+        checkSalesIdIsPresent(salesId);
+        var params = new HashMap<String, Object>();
+        params.put(salesIdParamName, salesId);
+        return composeJsonResponseObject(request, params);
+    }
+
+    private void checkSalesIdIsPresent(String salesId) {
+        if (salesId == null) {
+            throw new RuntimeException("salesId is required");
+        }
     }
 
     private ResponseEntity<Map<String, Object>> composeJsonResponseObject(HttpServletRequest request,

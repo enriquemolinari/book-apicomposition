@@ -1,4 +1,4 @@
-package apicomposer.impl;
+package apicomposer.framework;
 
 import apicomposer.api.RequestParticipant;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -23,12 +23,12 @@ public class ResponseComposer {
     final Logger logger = LoggerFactory.getLogger(ResponseComposer.class);
     private final CacheManager cacheManager;
     private final CacheKeyGenerator cacheKeyGenerator;
-    private final List<RequestParticipant> requestParticipant;
+    private final List<RequestParticipant> requestParticipants;
 
-    public ResponseComposer(List<RequestParticipant> requestParticipant,
+    public ResponseComposer(List<RequestParticipant> requestParticipants,
                             CacheManager cacheManager,
                             CacheKeyGenerator cacheKeyGenerator) {
-        this.requestParticipant = requestParticipant;
+        this.requestParticipants = requestParticipants;
         this.cacheManager = cacheManager;
         this.cacheKeyGenerator = cacheKeyGenerator;
     }
@@ -77,7 +77,7 @@ public class ResponseComposer {
     }
 
     private List<RequestParticipant> findInterestedParticipants(String requestPath, String method, Map<String, Object> params) {
-        return requestParticipant
+        return requestParticipants
                 .stream()
                 .filter(rp -> rp.isInterestedIn(requestPath, method, params))
                 .toList();
