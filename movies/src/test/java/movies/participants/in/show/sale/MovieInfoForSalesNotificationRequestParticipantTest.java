@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static movies.participants.in.show.sale.MovieInfoForSalesNotificationRequestParticipant.MOVIE_ID;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
@@ -59,6 +59,37 @@ public class MovieInfoForSalesNotificationRequestParticipantTest {
         assertEquals("The Movie of the Century", viewModel.getFirst().get("movieName"));
     }
 
+    @Test
+    public void testPreConditionsThrowsExceptionWhenMovieIdMissing() {
+        var requestParticipant = new MovieInfoForSalesNotificationRequestParticipant(new EnvValue(ENV_VALUE));
+        var viewModel = populateViewModel();
+        var params = new HashMap<String, Object>();
+        params.put("userId", 1L);
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            requestParticipant.contributeTo(viewModel, params);
+        });
+
+        assertEquals("movieId must be in params", exception.getMessage());
+    }
+
+    @Test
+    public void testInterestedInReturnsTrueForValidPathAndMethod() {
+        var requestParticipant = new MovieInfoForSalesNotificationRequestParticipant(new EnvValue(ENV_VALUE));
+        var params = new HashMap<String, Object>();
+        params.put(MOVIE_ID, 10L);
+        assertTrue(requestParticipant
+                .interestedIn(config.showSalesParticipatePath(), "GET", params));
+    }
+
+    @Test
+    public void testInterestedInReturnsFalseForInvalidPath() {
+        var requestParticipant = new MovieInfoForSalesNotificationRequestParticipant(new EnvValue(ENV_VALUE));
+        var params = new HashMap<String, Object>();
+        params.put(MOVIE_ID, 10L);
+        assertFalse(requestParticipant.interestedIn("/invalid/path", "GET", params));
+    }
+    
     private List<Map<String, Object>> populateViewModel() {
         var viewModel = new ArrayList<Map<String, Object>>();
         var map = new HashMap<String, Object>();

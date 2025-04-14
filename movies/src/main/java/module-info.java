@@ -4,5 +4,6 @@ module movies {
     requires java.net.http;
 
     opens movies.participants.in.shows;
+    opens movies.participants.in.show.sale;
     opens movies.participants.in.rates;
 }
