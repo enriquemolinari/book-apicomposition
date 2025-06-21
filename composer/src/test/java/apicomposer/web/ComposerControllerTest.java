@@ -117,7 +117,6 @@ public class ComposerControllerTest {
         ResponseEntity<String> response = restTemplate.getForEntity("/composed/shows/sale/abcde", String.class);
         assertTrue(response.getStatusCode().is2xxSuccessful());
         String body = response.getBody();
-        System.out.println(body);
         JSONAssert.assertEquals(jsonExpectedComposedShowSale(), body, true);
     }
 
